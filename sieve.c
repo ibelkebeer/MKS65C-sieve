@@ -28,7 +28,3 @@ int sieve(int targetPrime){
   }
 }
 
-int main(){
-  printf("%d\n", sieve(1000000));
-  return 0;
-}
