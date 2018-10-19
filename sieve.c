@@ -24,7 +24,11 @@ int sieve(int targetPrime){
     for(j = 2 * index; j < len; j += index){
       cur[j] = 1;
     }
-    index++;
+    index += 2;
   }
 }
 
+int main(){
+  printf("%d\n", sieve(1000000));
+  return 0;
+}
