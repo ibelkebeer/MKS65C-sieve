@@ -174,62 +174,7 @@ int charSieve(int targetPrime){
   }
   return 0;
 }
-/*
-int lTn(int l) {
-  if(l%2 == 0)
-    return 5 + 3 * l;
-  else
-    return 4 + 3 * l;
-}
-int nTl(int n) {
-  return (n - 4) / 3;
-}
 
-int sieveh(int targetPrime) {
-  if(targetPrime < 1)
-    return -1;
-  if(targetPrime == 1)
-    return 2;
-  if(targetPrime == 2)
-    return 3;
-  int locLimit;
-  if(targetPrime < 1000)
-    locLimit = .5 * targetPrime * (int)log(targetPrime);//set zones?
-  else
-    locLimit = .4 * targetPrime * (int)log(targetPrime);
-
-  int numLimit = numLimit * 3;
-  int exit = (int)sqrt(locLimit) + 1;
-  char *arrayThird = calloc(locLimit,sizeof(char));//change /8 +1
-  int locPrime = 0;
-  int size = 3;
-  for(locPrime; locPrime < exit; locPrime++) {
-    //printf("%d\n", locPrime);
-    if(*(arrayThird + locPrime) == 0) {
-      size++;
-      int numPrime = lTn(locPrime);
-      int locComposite = nTl(numPrime * numPrime);
-      int t = 2 * numPrime;
-      int m;
-      if((locComposite - locPrime) % 2 == 0)
-	       m = numPrime -  (numPrime + 1) / 3;
-      else
-	       m = numPrime +  (numPrime + 1) / 3;
-      printf("%d\n%d\n%d\n%d\n\n", numPrime, locComposite, t, m);
-      for(locComposite; locComposite < locLimit; locComposite += m) {
-        //printf("%d\n\n", locComposite);
-	*(arrayThird + locComposite) = 1;
-	m = t - m;
-      }
-    }
-  }
-  for(locPrime; size <= targetPrime;locPrime++)
-    if(*(arrayThird + locPrime) == 0)
-      size++;
-  printf("%d\n", locPrime);
-  return  lTn(locPrime - 1);
-}
-*/
 int main(){
   int i;
   printf("%d\n", fastsieve(1000000));
