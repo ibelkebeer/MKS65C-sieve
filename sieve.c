@@ -67,23 +67,32 @@ int fastsieve(int targetPrime){
     len = 1.3 * targetPrime * log(targetPrime) + 10;
   }
   int* cur = calloc((len * 2) / 192, sizeof(int));
-  int offset = 0;
   int mult3 = 1;
   int index = 5;
   int i = 3;
+  int indexer;
   while(i <= targetPrime){
+    indexer = (((index - (((index+1) / 3) - 1)) >> 1) & 31);
     if(i == targetPrime){
-      if(!(cur[(index*2) / 192] & ((1 << (((index - offset) >> 1) & 31)) >> 2))){
-        return index;
+      while(cur[(index*2) / 192] & (1 << indexer)){
+        mult3++;
+        mult3 %= 3;
+        if(mult3){
+          index += 2;
+        }else{
+          index += 4;
+          mult3++;
+        }
+        indexer = (((index - (((index+1) / 3) - 1)) >> 1) & 31);
       }
-      if(mult3 == 2){
-        return index + 4;
-      }
-      return index+2;
+      return index;
     }
-    if(!(cur[(index*2) / 192] & ((1 << (((index - offset) >> 1) & 31)) >> 2))){
+    if(!(cur[(index*2) / 192] & (1 << indexer))){
       for(int j = index * index; j < len; j += 2 * index){
-        cur[(j * 2) / 192] |= (1 << (((j - (((j+1) / 3) - 2)) >> 1) & 31)) >> 2;
+        if(j % 3){
+          indexer = ((j - (((j+1) / 3) - 1)) >> 1) & 31;
+          cur[(j * 2) / 192] |= (1 << indexer);
+        }
       }
       i++;
     }
@@ -92,7 +101,6 @@ int fastsieve(int targetPrime){
     if(!(mult3)){
       index += 4;
       mult3++;
-      offset += 2;
     }else{
       index += 2;
     }
@@ -102,6 +110,8 @@ int fastsieve(int targetPrime){
 
 int main(){
   int i;
-  printf("%d\n", fastsieve(16));
+  //for(i = 25; i < 30; i++){
+    printf("%d\n", fastsieve(4794));
+  //}
   return 0;
 }
