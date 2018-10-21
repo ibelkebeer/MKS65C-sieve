@@ -77,7 +77,7 @@ int fastsieve(int targetPrime){
   }else{
     len = 1.5 * targetPrime * log(targetPrime) + 10;
   }
-  int* cur = calloc((len * 2) / 192, sizeof(int));
+  int* cur = calloc(len / 96, sizeof(int));
   long index;
   int i = 3;
   int num = 0;
@@ -86,11 +86,11 @@ int fastsieve(int targetPrime){
   while(i < (int)sqrt(len) + 1){
     index = potentialPrime(num);
     indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
-    if(!(cur[(index*2) / 192] & (1 << indexer))){
+    if(!(cur[index / 96] & (1 << indexer))){
       for(j = index * index; j < len; j += 2 * index){
         if(j % 3){
           indexer = ((j - (((j+1) / 3) - 2)) >> 1) & 31;
-          cur[(j * 2) / 192] |= (1 << indexer);
+          cur[j / 96] |= (1 << indexer);
         }
       }
       i++;
@@ -100,7 +100,7 @@ int fastsieve(int targetPrime){
   while(i <= targetPrime){
     index = potentialPrime(num);
     indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
-    while(cur[(index*2) / 192] & (1 << indexer)){
+    while(cur[index / 96] & (1 << indexer)){
       num++;
       index = potentialPrime(num);
       indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
@@ -109,7 +109,7 @@ int fastsieve(int targetPrime){
       num++;
       index = potentialPrime(num);
       indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
-      while(cur[(index*2) / 192] & (1 << indexer)){
+      while(cur[index / 96] & (1 << indexer)){
         num++;
         index = potentialPrime(num);
         indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
@@ -123,7 +123,7 @@ int fastsieve(int targetPrime){
   return 0;
 }
 
-int charSieve(int targetPrime){
+int fastersieve(int targetPrime){
   if(targetPrime == 1){
     return 2;
   }
@@ -136,18 +136,20 @@ int charSieve(int targetPrime){
   }else{
     len = 1.5 * targetPrime * log(targetPrime) + 10;
   }
-  char *cur = calloc((len * 2) / 192, sizeof(char));
+  char* cur = calloc(len / 12, sizeof(char));
   long index;
   int i = 3;
   int num = 0;
   int indexer;
   long j;
   while(i < (int)sqrt(len) + 1){
-    if(!(cur[num])){
-      index = potentialPrime(num);
+    index = potentialPrime(num);
+    indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
+    if(!(cur[index / 12] & (1 << indexer))){
       for(j = index * index; j < len; j += 2 * index){
         if(j % 3){
-          cur[ptoi(j)] = 1;
+          indexer = ((j - (((j+1) / 3) - 2)) >> 1) & 7;
+          cur[j / 12] |= (1 << indexer);
         }
       }
       i++;
@@ -155,21 +157,26 @@ int charSieve(int targetPrime){
     num++;
   }
   while(i <= targetPrime){
-    while(cur[num]){
+    index = potentialPrime(num);
+    indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
+    while(cur[index / 12] & (1 << indexer)){
       num++;
+      index = potentialPrime(num);
+      indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
     }
     if(i < targetPrime){
       num++;
-      while(cur[num]){
+      index = potentialPrime(num);
+      indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
+      while(cur[index / 12] & (1 << indexer)){
         num++;
+        index = potentialPrime(num);
+        indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
       }
       i++;
     }
     if(i == targetPrime){
-      while(cur[num]){
-        num++;
-      }
-      return potentialPrime(num);
+      return index;
     }
   }
   return 0;
@@ -177,6 +184,6 @@ int charSieve(int targetPrime){
 
 int main(){
   int i;
-  printf("%d\n", fastsieve(1000000));
+  printf("%d\n", fastersieve(1000000));
   return 0;
 }
