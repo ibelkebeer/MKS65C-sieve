@@ -72,8 +72,7 @@ int fastsieve(int targetPrime){
   int i = 3;
   int indexer;
   long j;
-  while(i - 3 < (int)sqrt(len) + 1){
-    //printf("%d\n%d\n\n", i, index);
+  while(i - 3 < (int)sqrt((len * 2) / 192) + 120){
     indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
     if(!(cur[(index*2) / 192] & (1 << indexer))){
       for(j = index * index; j < len; j += 2 * index){
@@ -129,7 +128,6 @@ int fastsieve(int targetPrime){
       }
       i++;
     }
-    //printf("%d\n%d\n\n", i, index);
     if(i == targetPrime){
       return index;
     }
@@ -139,6 +137,6 @@ int fastsieve(int targetPrime){
 
 int main(){
   int i;
-  printf("%d\n", fastsieve(1000000));
+  printf("%d\n", fastsieve(2000000));
   return 0;
 }
