@@ -73,9 +73,9 @@ int fastsieve(int targetPrime){
   }
   int len;
   if(targetPrime > 5000){
-    len = 1.31 * targetPrime * log(targetPrime);
+    len = 1.31 * targetPrime * (int)log(targetPrime);
   }else{
-    len = 1.5 * targetPrime * log(targetPrime) + 10;
+    len = 1.5 * targetPrime * (int)log(targetPrime) + 10;
   }
   int* cur = calloc(len / 96, sizeof(int));
   long index;
@@ -123,7 +123,56 @@ int fastsieve(int targetPrime){
   return 0;
 }
 
+int fastersieve(int targetPrime){
+  if(targetPrime == 1){
+    return 2;
+  }
+  if(targetPrime == 2){
+    return 3;
+  }
+  int len;
+  if(targetPrime < 1000){
+    len = .5 * targetPrime * (int)log(targetPrime);
+  }else{
+    len = .4 * targetPrime * (int)log(targetPrime);
+  }
+  int* cur = calloc(len / 32, sizeof(int));
+  int index = 0;
+  int i = 3;
+  int num;
+  int square;
+  int next;
+  int range;
+  int limit = (int)sqrt(len) / 1.73;
+  while(index < limit){
+    if(!(cur[index / 32] & (1 << (index & 31)))){
+      num = potentialPrime(index);
+      square = ptoi(num * num);
+      next = 2 * num;
+      if(!((square - index) % 2)){
+        range = num - (num+1) / 3;
+      }else{
+        range = num + (num+1) / 3;
+      }
+      while(square < len){
+        cur[square / 32] |= (1 << (square & 31));
+        range = next - range;
+        square += range;
+      }
+      i++;
+    }
+    index++;
+  }
+  while(i <= targetPrime){
+    if(!(cur[index / 32] & (1 << (index & 31)))){
+      i++;
+    }
+    index++;
+  }
+  return potentialPrime(index - 1);
+}
+
 int main(){
-  printf("%d\n", fastsieve(2000000));
+  printf("%d\n", fastersieve(1000000));
   return 0;
 }
