@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "sieve.h"
-/*
+
 int sieve(int targetPrime){
   if(targetPrime == 1){
     return 2;
@@ -52,7 +52,7 @@ int sieve(int targetPrime){
   }
   return 0;
 }
-*/
+
 int potentialPrime(int i){
   if(i % 2 == 0){
     return 5 + 3 * i;
@@ -120,11 +120,5 @@ int fastsieve(int targetPrime){
       return index;
     }
   }
-  return 0;
-}
-
-int main(){
-  int i;
-  printf("%d\n", fastsieve(1000000));
   return 0;
 }
