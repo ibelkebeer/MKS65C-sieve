@@ -83,7 +83,7 @@ int fastsieve(int targetPrime){
   int num = 0;
   int indexer;
   long j;
-  while(i < (int)sqrt(len) + 1){
+  while(i < (int)sqrt(len) / 7){
     index = potentialPrime(num);
     indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
     if(!(cur[index / 96] & (1 << indexer))){
@@ -120,5 +120,10 @@ int fastsieve(int targetPrime){
       return index;
     }
   }
+  return 0;
+}
+
+int main(){
+  printf("%d\n", fastsieve(2000000));
   return 0;
 }
