@@ -61,7 +61,7 @@ int potentialPrime(int i){
 }
 
 int ptoi(int i){
-  return (i=4) / 3;
+  return (i-4) / 3;
 }
 
 int fastsieve(int targetPrime){
@@ -87,7 +87,7 @@ int fastsieve(int targetPrime){
     index = potentialPrime(num);
     indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
     if(!(cur[index / 96] & (1 << indexer))){
-      for(j = index * index; j < len; j += 2 * index){
+      for(j = index * index; j < len; j += index * 2){
         if(j % 3){
           indexer = ((j - (((j+1) / 3) - 2)) >> 1) & 31;
           cur[j / 96] |= (1 << indexer);
@@ -136,21 +136,31 @@ int fastersieve(int targetPrime){
   }else{
     len = 1.5 * targetPrime * log(targetPrime) + 10;
   }
-  char* cur = calloc(len / 12, sizeof(char));
-  long index;
+  int* cur = calloc(len / 96, sizeof(int));
+  int index;
   int i = 3;
   int num = 0;
+  int c;
+  int dist;
   int indexer;
-  long j;
+  int j;
+  long temp;
   while(i < (int)sqrt(len) + 1){
     index = potentialPrime(num);
-    indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
-    if(!(cur[index / 12] & (1 << indexer))){
-      for(j = index * index; j < len; j += 2 * index){
-        if(j % 3){
-          indexer = ((j - (((j+1) / 3) - 2)) >> 1) & 7;
-          cur[j / 12] |= (1 << indexer);
-        }
+    indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
+    if(!(cur[index / 96] & (1 << indexer))){
+      j = ptoi(index * index);
+      if((j - num) % 2 == 0){
+        c = index - (index+1) / 3;
+      }else{
+        c = index + (index + 1) / 3;
+      }
+      dist = 2 * index;
+      for(j; potentialPrime(j) < len; j += c){
+        temp = potentialPrime(j);
+        indexer = ((temp - (((temp+1) / 3) - 2)) >> 1) & 31;
+        cur[temp / 96] |= (1 << indexer);
+        c = dist - c;
       }
       i++;
     }
@@ -158,20 +168,20 @@ int fastersieve(int targetPrime){
   }
   while(i <= targetPrime){
     index = potentialPrime(num);
-    indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
-    while(cur[index / 12] & (1 << indexer)){
+    indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
+    while(cur[index / 96] & (1 << indexer)){
       num++;
       index = potentialPrime(num);
-      indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
+      indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
     }
     if(i < targetPrime){
       num++;
       index = potentialPrime(num);
-      indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
-      while(cur[index / 12] & (1 << indexer)){
+      indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
+      while(cur[index / 96] & (1 << indexer)){
         num++;
         index = potentialPrime(num);
-        indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 7;
+        indexer = ((index - (((index+1) / 3) - 2)) >> 1) & 31;
       }
       i++;
     }
